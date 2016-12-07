@@ -330,14 +330,16 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 func (t *SimpleChaincode) set_user(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
 
+  fmt.Println("- Set User - Vinod")
 	//   0       1
 	// "name", "bob"
-	if len(args) < 2 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 2")
+	if len(args) < 3 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 3")
 	}
 
 	fmt.Println("- start set user")
 	fmt.Println(args[0] + " - " + args[1])
+	fmt.Println("Value of Transaction " + args[2])     // Change Vinod
 	marbleAsBytes, err := stub.GetState(args[0])
 	if err != nil {
 		return nil, errors.New("Failed to get thing")

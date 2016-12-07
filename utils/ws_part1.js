@@ -24,10 +24,10 @@ module.exports.process_msg = function(ws, data){
 		}
 		else if(data.type == 'transfer'){
 			console.log('transfering msg');
-			if(data.name && data.user){
-				chaincode.invoke.set_user([data.name, data.user]);
+			if(data.name && data.user && data.value){
+				chaincode.invoke.set_user([data.name, data.user, data.value]);
 			}
-		}
+		}    // Added additonal parameter
 		else if(data.type == 'remove'){
 			console.log('removing msg');
 			if(data.name){
@@ -68,11 +68,11 @@ module.exports.process_msg = function(ws, data){
 			}
 		}
 	}
-	
+
 	function cb_invoked(e, a){
 		console.log('response: ', e, a);
 	}
-	
+
 	//call back for getting the blockchain stats, lets get the block stats now
 	function cb_chainstats(e, chain_stats){
 		if(chain_stats && chain_stats.height){
@@ -95,7 +95,7 @@ module.exports.process_msg = function(ws, data){
 			});
 		}
 	}
-	
+
 	//send a message, socket might be closed...
 	function sendMsg(json){
 		if(ws){
