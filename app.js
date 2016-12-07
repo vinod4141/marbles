@@ -4,7 +4,7 @@
 /*******************************************************************************
  * Copyright (c) 2015 IBM Corp.
  *
- * All rights reserved. 
+ * All rights reserved.
  *
  * Contributors:
  *   David Huffman - Initial implementation
@@ -38,7 +38,7 @@ app.engine('.html', require('jade').__express);
 app.use(compression());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded()); 
+app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use('/cc/summary', serve_static(path.join(__dirname, 'cc_summaries')) );												//for chaincode investigator
 app.use( serve_static(path.join(__dirname, 'public'), {maxAge: '1d', setHeaders: setCustomCC}) );							//1 day cache
@@ -70,7 +70,7 @@ app.use(function(req, res, next){
 	console.log('New ' + req.method + ' request for', req.url);
 	req.bag = {};																			//create object for my stuff
 	req.bag.session = req.session;
-	
+
 	var url_parts = url.parse(req.url, true);
 	req.parameters = url_parts.query;
 	keys = Object.keys(req.parameters);
@@ -151,8 +151,8 @@ var ibc = new Ibc1();
 try{
 	//this hard coded list is intentionaly left here, feel free to use it when initially starting out
 	//please create your own network when you are up and running
-	var manual = JSON.parse(fs.readFileSync('mycreds_docker_compose.json', 'utf8'));
-	//var manual = JSON.parse(fs.readFileSync('mycreds_bluemix.json', 'utf8'));
+	//var manual = JSON.parse(fs.readFileSync('mycreds_docker_compose.json', 'utf8'));
+	var manual = JSON.parse(fs.readFileSync('mycreds_bluemix.json', 'utf8'));
 	var peers = manual.credentials.peers;
 	console.log('loading hardcoded peers');
 	var users = null;																			//users are only found if security is on
@@ -180,7 +180,7 @@ if(process.env.VCAP_SERVICES){																	//load from vcap, search for serv
 				if(servicesObject[i][0].credentials.users){										//user field may or maynot exist, depends on if there is membership services or not for the network
 					console.log('overwritting users, loading from a vcap service: ', i);
 					users = servicesObject[i][0].credentials.users;
-				} 
+				}
 				else users = null;																//no security
 				break;
 			}
@@ -224,10 +224,11 @@ var options = 	{
 								}
 					},
 					chaincode:{
-						zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v2.0.zip',
+					//	zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v2.0.zip',
+					  zip_url: 'https://github.com/vinod4141/marbles/archive/v2.0.zip',
 						unzip_dir: 'marbles-2.0/chaincode',													//subdirectroy name of chaincode after unzipped
-						git_url: 'http://gopkg.in/ibm-blockchain/marbles.v2/chaincode',						//GO get http url
-					
+				//	  git_url: 'http://gopkg.in/ibm-blockchain/marbles.v2/chaincode',						//GO get http url
+						git_url: 'https://github.com/vinod4141/marbles',
 						//hashed cc name from prev deployment, comment me out to always deploy, uncomment me when its already deployed to skip deploying again
 						//deployed_name: '16e655c0fce6a9882896d3d6d11f7dcd4f45027fd4764004440ff1e61340910a9d67685c4bb723272a497f3cf428e6cf6b009618612220e1471e03b6c0aa76cb'
 					}
@@ -314,7 +315,7 @@ function cb_deployed(e){
 	}
 	else{
 		console.log('------------------------------------------ Websocket Up ------------------------------------------');
-		
+
 		wss = new ws.Server({server: server});												//start the websocket now
 		wss.on('connection', function connection(ws) {
 			ws.on('message', function incoming(message) {
@@ -328,11 +329,11 @@ function cb_deployed(e){
 					console.log('ws message error', e);
 				}
 			});
-			
+
 			ws.on('error', function(e){console.log('ws error', e);});
 			ws.on('close', function(){console.log('ws closed');});
 		});
-		
+
 		wss.broadcast = function broadcast(data) {											//send to all connections
 			wss.clients.forEach(function each(client) {
 				try{
@@ -343,7 +344,7 @@ function cb_deployed(e){
 				}
 			});
 		};
-		
+
 		// ========================================================
 		// Monitor the height of the blockchain
 		// ========================================================
@@ -355,7 +356,7 @@ function cb_deployed(e){
 				chaincode.query.read(['_marbleindex'], cb_got_index);
 				chaincode.query.read(['_opentrades'], cb_got_trades);
 			}
-			
+
 			//got the block's stats, lets send the statistics
 			function cb_blockstats(e, stats){
 				if(e != null) console.log('blockstats error:', e);
@@ -365,7 +366,7 @@ function cb_deployed(e){
 					wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 				}
 			}
-			
+
 			//got the marble index, lets get each marble
 			function cb_got_index(e, index){
 				if(e != null) console.log('marble index error:', e);
@@ -382,7 +383,7 @@ function cb_deployed(e){
 					}
 				}
 			}
-			
+
 			//call back for getting a marble, lets send a message
 			function cb_got_marble(e, marble){
 				if(e != null) console.log('marble error:', e);
@@ -395,7 +396,7 @@ function cb_deployed(e){
 					}
 				}
 			}
-			
+
 			//call back for getting open trades, lets send the trades
 			function cb_got_trades(e, trades){
 				if(e != null) console.log('trade error:', e);
